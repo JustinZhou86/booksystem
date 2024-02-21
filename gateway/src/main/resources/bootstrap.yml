@@ -1,0 +1,15 @@
+spring:
+    application:
+     name: gateway
+    cloud:
+        config: 
+            uri: http://localhost:8071
+#    inetutils:
+#      ignored-interfaces: 'VMware Virtual Ethernet Adapter for VMnet1,VMware Virtual Ethernet Adapter for VMnet8'
+
+logging:
+  level:
+    com.netflix: WARN
+    org.springframework.web: WARN
+    com.optimagrowth: DEBUG
+            

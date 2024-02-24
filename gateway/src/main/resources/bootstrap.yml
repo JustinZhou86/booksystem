@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: dev
   application:
     name: gateway
 
@@ -7,9 +9,11 @@ spring:
   cloud:
     config:
       uri: http://localhost:8071
+  config:
+    activate:
+      on-profile: dev
 #    inetutils:
 #      ignored-interfaces: 'VMware Virtual Ethernet Adapter for VMnet1,VMware Virtual Ethernet Adapter for VMnet8'
-
 logging:
   level:
     com.netflix: WARN

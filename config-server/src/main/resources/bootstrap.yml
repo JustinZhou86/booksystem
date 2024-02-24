@@ -8,9 +8,9 @@ spring:
       server:
         native:
           #if use classpath, when the config server is started, it can not load the latest change to it. need to restart server.
-          search-locations: classpath:/config
+          search-locations: ${CFG_DIR:classpath:/config}
           #use the absolute path ,let the config server can pickup the latest changes
-#          search-locations: file:///I:/DEV/workspaces/booksystem/config-server/src/main/resources/config
+#          search-locations: ${CFG_DIR:file:///I:/DEV/workspaces/workspaceIdea/configserver/src/main/resources/config}
 #    inetutils:
 #      ignored-interfaces: 'VMware Virtual Ethernet Adapter for VMnet1,VMware Virtual Ethernet Adapter for VMnet8'
 #      preferred-networks: '192.168.10.0'

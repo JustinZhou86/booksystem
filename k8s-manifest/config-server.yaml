@@ -1,0 +1,53 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: justin-config-server
+spec:
+  selector:
+    matchLabels:
+      app: justin-config-server
+  template:
+    metadata:
+      labels:
+        app: justin-config-server
+    spec:
+      containers:
+        - name: justin-config-server
+          image: book/config-server:0.0.1-SNAPSHOT
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: "500Mi"
+              cpu: "500m"
+          env:
+            - name: SPRING_CLOUD_BOOTSTRAP_ENABLED
+              value: "true"
+#            - name: CFG_DIR
+#              value: file:///root/spring-ms-config
+          ports:
+            - containerPort: 8071
+              protocol: TCP
+#          volumeMounts:
+#            - name: config-pv
+#              mountPath: /root/spring-ms-config
+#      volumes:
+#        - name: config-pv
+#          persistentVolumeClaim:
+#            claimName: springms-config-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: justin-config-server
+  labels:
+    app: justin-config-server
+spec:
+  selector:
+    app: justin-config-server
+  type: NodePort
+  ports:
+    - port: 8071
+      targetPort: 8071
+      nodePort: 31000
+      protocol: TCP

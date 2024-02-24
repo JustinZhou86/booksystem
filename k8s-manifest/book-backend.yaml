@@ -1,0 +1,53 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: justin-book-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: justin-book-backend
+  template:
+    metadata:
+      labels:
+        app: justin-book-backend
+    spec:
+      containers:
+        - name: justin-book-backend
+          image: book/book-backend:0.0.1-SNAPSHOT
+          resources:
+            limits:
+              memory: "800Mi"
+              cpu: "500m"
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: SPRING_CLOUD_CONFIG_URI
+            value: "http://justin-config-server.default.svc.cluster.local:8071"
+          - name: REG_SERVER_URL
+            value: "http://justin-register-server.default.svc.cluster.local:8070/eureka/"
+          - name: DS_JDBC_URL
+            value: "jdbc:mysql://mysql.default.svc.cluster.local:3306/book?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai"
+          - name: DB_PASS
+            value: 8rjq60RkpF
+          - name: GATEWAY_SERVER_URL
+            value: http://justin-gateway-server.default.svc.cluster.local:8072
+          ports:
+            - containerPort: 8081
+              protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: justin-book-backend
+  labels:
+    app: justin-book-backend
+spec:
+  selector:
+    app: justin-book-backend
+  type: NodePort
+  ports:
+    - port: 8081
+      targetPort: 8081
+      nodePort: 31300
+      protocol: TCP

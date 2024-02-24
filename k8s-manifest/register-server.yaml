@@ -1,0 +1,46 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: justin-register-server
+spec:
+  selector:
+    matchLabels:
+      app: justin-register-server
+  template:
+    metadata:
+      labels:
+        app: justin-register-server
+    spec:
+      containers:
+        - name: justin-register-server
+          image: book/register-server:0.0.1-SNAPSHOT
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: "500Mi"
+              cpu: "500m"
+          env:
+            - name: SPRING_CLOUD_CONFIG_URI
+              value: "http://justin-config-server.default.svc.cluster.local:8071"
+            - name: EUREKA_SERVER_NAME
+              value: "justin-register-server.default.svc.cluster.local"
+          ports:
+            - containerPort: 8070
+              protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: justin-register-server
+  labels:
+    app: justin-register-server
+spec:
+  selector:
+    app: justin-register-server
+  type: NodePort
+  ports:
+    - port: 8070
+      targetPort: 8070
+      nodePort: 31100
+      protocol: TCP

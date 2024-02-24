@@ -1,11 +1,17 @@
 spring:
-    application:
-     name: book-backend
-    profiles:
-      active: dev
-    cloud:
-        config: 
-            uri: http://localhost:8071
+  profiles:
+    active: dev
+  application:
+    name: book-backend
+
+---
+spring:
+  cloud:
+    config:
+      uri: http://localhost:8071
+  config:
+    activate:
+      on-profile: dev
 
 
 logging:
@@ -13,3 +19,15 @@ logging:
     com.netflix: WARN
     org.springframework.web: WARN
     com.optimagrowth: DEBUG
+
+---
+spring:
+  config:
+    activate:
+      on-profile: integrationtest
+  cloud:
+    config:
+      enabled: false
+eureka:
+  client:
+    enabled: false

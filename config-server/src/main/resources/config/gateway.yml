@@ -28,7 +28,23 @@ spring:
           filters:
           - RewritePath=/book-proxy/(?<path>.*), /$\{path}
           - RemoveRequestHeader= Cookie,Set-Cookie
-   
+        globalcors:
+          cors-configurations:
+            #apply for all the routes
+            '[/**]':
+              allowedOrigins: "*"
+              allowedHeaders: "*"
+              allowedMethods:
+                - GET
+                - POST
+                - PUT
+                - DELETE
+                - OPTIONS
+                - HEAD
+              maxAge: 1800
+        #remove the duplicated cors heads
+        default-filters:
+          - DedupeResponseHeader=Vary Access-Control-Allow-Origin Access-Control-Allow-Credentials Access-Control-Max-Age Access-Control-Allow-Methods Access-Control-Allow-Headers, RETAIN_FIRST
     
 management:
   endpoints:

@@ -1,0 +1,46 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: justin-gateway-server
+spec:
+  selector:
+    matchLabels:
+      app: justin-gateway-server
+  template:
+    metadata:
+      labels:
+        app: justin-gateway-server
+    spec:
+      containers:
+        - name: justin-gateway-server
+          image: book/gateway:0.0.1-SNAPSHOT
+          imagePullPolicy: IfNotPresent
+          resources:
+            limits:
+              memory: "500Mi"
+              cpu: "500m"
+          env:
+            - name: SPRING_CLOUD_CONFIG_URI
+              value: "http://justin-config-server.default.svc.cluster.local:8071"
+            - name: REG_SERVER_URL
+              value: "http://justin-register-server.default.svc.cluster.local:8070/eureka/"
+          ports:
+            - containerPort: 8072
+              protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: justin-gateway-server
+  labels:
+    app: justin-gateway-server
+spec:
+  selector:
+    app: justin-gateway-server
+  type: NodePort
+  ports:
+    - port: 8072
+      targetPort: 8072
+      nodePort: 31200
+      protocol: TCP

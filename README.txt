@@ -12,7 +12,7 @@ config-server>mvn spring-boot:run
 register-server>mvn spring-boot:run
 gateway-server>mvn spring-boot:run
 book-backend>mvn spring-boot:run
-book-frontend>yarn dev
+book-frontend>yarn run start
 
 
 1.3 test the book system

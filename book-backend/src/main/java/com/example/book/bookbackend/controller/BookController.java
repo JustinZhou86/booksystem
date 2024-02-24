@@ -29,13 +29,29 @@ public class BookController {
     @GetMapping(value="/{bookId}")
     public ResponseEntity<Book> getBook(@PathVariable("bookId") String bookId) {
         logger.debug("Entering the getBook() method for the bookId: {}",bookId);
-        return ResponseEntity.ok(bookService.findById(bookId));
+        Book book = bookService.findById(bookId);
+        if (book == null) {
+            return ResponseEntity.notFound().build();
+        }else{
+            return ResponseEntity.ok(bookService.findById(bookId));
+        }
     }
 
 
 
     @PutMapping(value="/{bookId}")
     public ResponseEntity<Book>  updateBook( @PathVariable("bookId") String id, @RequestBody Book book) {
+
+        Book oldBook = bookService.findById(id);
+        if (oldBook == null){
+            return ResponseEntity.notFound().build();
+        }
+        oldBook.setId(book.getId());
+        oldBook.setTitle(book.getTitle());
+        oldBook.setAuthor(book.getAuthor());
+        oldBook.setIsbn(book.getIsbn());
+        oldBook.setPublicationYear(book.getPublicationYear());
+
         return ResponseEntity.ok(bookService.update(book));
     }
 

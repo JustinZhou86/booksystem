@@ -10,7 +10,7 @@ class App extends Component {
         <Router>
           <React.StrictMode>
           <Switch>
-            <Route path='/' exact={true} component={BookList}/>
+            {<Route path='/' exact={true} component={BookList}/> }
             <Route path='/books' exact={true} component={BookList}/>
             <Route path='/books/:id' component={BookEdit}/>
           </Switch>

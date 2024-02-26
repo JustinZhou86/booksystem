@@ -22,6 +22,7 @@ class BookEdit extends Component {
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
+
     async componentDidMount() {
         if (this.props.match.params.id !== 'new') {
             const book = await (await fetch(API_PREFIX+`/books/${this.props.match.params.id}`)).json();
@@ -78,8 +79,8 @@ class BookEdit extends Component {
                                onChange={this.handleChange} autoComplete="publicationYear"/>
                     </FormGroup>
                     <FormGroup>
-                        <Label for="isbn">isbn</Label>
-                        <Input type="text" name="isbn" id="Isbn" value={item.isbn || ''}
+                        <Label for="isbn">Isbn</Label>
+                        <Input type="text" name="isbn" id="isbn" value={item.isbn || ''}
                                onChange={this.handleChange} autoComplete="isbn"/>
                     </FormGroup>
                     <FormGroup>

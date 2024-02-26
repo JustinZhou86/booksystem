@@ -14,13 +14,16 @@ class BookList extends Component {
 
 
     componentDidMount() {
-        console.log("xxx"+API_PREFIX);
+        console.log("api endpoint: "+API_PREFIX);
         fetch(API_PREFIX+'/books')
-            .then(response => response.json())
+            .then(response => {
+                //console.log(response.json());
+                return response.json();})
             .then(data => this.setState({books: data}));
     }
 
     async remove(id) {
+        console.log("do click remove");
         await fetch(API_PREFIX+`/books/${id}`, {
             method: 'DELETE',
             headers: {
@@ -40,6 +43,8 @@ class BookList extends Component {
             return <p>Loading...</p>;
         }
     
+        console.log("xxx"+books);
+
         const bookList = books.map(book => {
             return <tr key={book.id}>
                 <td style={{whiteSpace: 'nowrap'}}>{book.title}</td>

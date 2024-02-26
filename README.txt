@@ -36,6 +36,36 @@ try to uncomment the dockerfile-maven-plugin this block in all of your pom.xml
 try mvn clean install to build the image and push to your image registry.
 
 
+config-server>mvn clean install
+register-server>mvn clean install
+gateway-server>mvn clean install
+book-backend>mvn clean install
+
+
+
+2.2.1 use docker to build frontend
+
+edit book-frontend/src/Config.js
+export const API_PREFIX = "http://localhost:8072/book-proxy"; 
+
+ ===> change to http://justin-gateway-server.default.svc.cluster.local:8072/book-proxy,  the url base on your actually k8s namespace, k8s cluster name.
+eg. my k8s namespace=default, my cluster name: local
+
+#build the binary for react app.
+book-frontend>yarn run build        
+
+Option A:  build image with the artifact built in your local  book-frontend/build folder.
+use build or buildx is also ok, please change the ip to your docker server 's ip address.
+docker -H tcp://192.168.17.72:2375 build -t book/book-frontend .
+
+docker -H tcp://192.168.17.72:2375 buildx build -t book/book-frontend .
+
+Option B:  react build and image build all in docker builder container.
+if you want to build you react code inside the node builder container. you can try multiple stage build
+
+docker -H tcp://192.168.17.72:2375  build -t book/book-frontend . -f Dockerfile-mul-stage
+
+
 2.3 Guide used to config mysql pod.
 
 helm repo add bitnami https://charts.bitnami.com/bitnami
@@ -62,6 +92,17 @@ mysql -h mysql.default.svc.cluster.local -uroot -pj6xHTsFs2p
 
 2.4 delploy all your deployments, services in your kubernet cluster.
 
+open k8s-manifest folder, change the service url in enviroment section in all ymls to the correct url
+
+          env:
+          - name: SPRING_CLOUD_CONFIG_URI
+            value: "http://justin-config-server.default.svc.cluster.local:8071"
+
+see the bellow pattern.  
+the url base on your actually k8s namespace, k8s cluster name.
+http://justin-config-server.[namespace].svc.cluster.[clustername]:8071
+
+
 must execute in bellow order
 kubectl apply -f config-server.yaml
 kubectl apply -f register-server.yaml
@@ -73,7 +114,9 @@ use kubectl get svc to find the nodeport expose by all of the service.
 
 
 
-health Check URL in local:
+3.Health Check.
+
+3.1 health Check URL in local:
 register server
 http://127.0.0.1:8070/
 
@@ -83,3 +126,20 @@ http://127.0.0.1:8072/actuator/gateway/routes
 config-server
 http://localhost:8071/register-server/dev
 http://localhost:8071/gateway/dev
+
+frontend
+http://localhost:3000/
+
+3.2 health Check URL for apps deployed on K8s cluster
+register server
+http://192.168.71.72:31100/
+
+gateway
+http://192.168.71.72:31200/actuator/gateway/routes
+
+config-server
+http://192.168.71.72:31000/register-server/dev
+http://192.168.71.72:31000/gateway/dev
+
+frontend
+http://192.168.71.72:31400/

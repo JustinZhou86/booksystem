@@ -30,8 +30,6 @@ spec:
             value: "jdbc:mysql://mysql.default.svc.cluster.local:3306/book?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai"
           - name: DB_PASS
             value: 8rjq60RkpF
-          - name: GATEWAY_SERVER_URL
-            value: http://justin-gateway-server.default.svc.cluster.local:8072
           ports:
             - containerPort: 8081
               protocol: TCP

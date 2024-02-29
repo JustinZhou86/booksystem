@@ -48,22 +48,28 @@ book-backend>mvn clean install
 edit book-frontend/src/Config.js
 export const API_PREFIX = "http://localhost:8072/book-proxy"; 
 
- ===> change to http://justin-gateway-server.default.svc.cluster.local:8072/book-proxy,  the url base on your actually k8s namespace, k8s cluster name.
-eg. my k8s namespace=default, my cluster name: local
+ ===> change to http://192.168.17.71:31200/book-proxy, this  url base on your actuall k8s node's IP and node port for book-frontend.
+
+because our react ui is hosted on nginx, and it will retrun html & js code to browser side, and the browser will execute the js code.  
+
+if the api endpoint can not accessed by your local browser, your react ui will not wrok.
+
+so here the proxy url, we must use the public IP to the browser, not the internal k8s service url. eg.(http://justin-gateway-server.default.svc.cluster.local:8072/book-proxy)
+
 
 #build the binary for react app.
 book-frontend>yarn run build        
 
 Option A:  build image with the artifact built in your local  book-frontend/build folder.
 use build or buildx is also ok, please change the ip to your docker server 's ip address.
-docker -H tcp://192.168.17.72:2375 build -t book/book-frontend .
+docker -H tcp://192.168.17.72:2375 build -t book/book-frontend:0.0.1-SNAPSHOT .
 
-docker -H tcp://192.168.17.72:2375 buildx build -t book/book-frontend .
+docker -H tcp://192.168.17.72:2375 buildx build -t book/book-frontend:0.0.1-SNAPSHOT .
 
 Option B:  react build and image build all in docker builder container.
 if you want to build you react code inside the node builder container. you can try multiple stage build
 
-docker -H tcp://192.168.17.72:2375  build -t book/book-frontend . -f Dockerfile-mul-stage
+docker -H tcp://192.168.17.72:2375  build -t book/book-frontend:0.0.1-SNAPSHOT . -f Dockerfile-mul-stage
 
 
 2.3 Guide used to config mysql pod.
@@ -132,14 +138,14 @@ http://localhost:3000/
 
 3.2 health Check URL for apps deployed on K8s cluster
 register server
-http://192.168.71.72:31100/
+http://192.168.17.72:31100/
 
 gateway
-http://192.168.71.72:31200/actuator/gateway/routes
+http://192.168.17.72:31200/actuator/gateway/routes
 
 config-server
-http://192.168.71.72:31000/register-server/dev
-http://192.168.71.72:31000/gateway/dev
+http://192.168.17.72:31000/register-server/dev
+http://192.168.17.72:31000/gateway/dev
 
 frontend
-http://192.168.71.72:31400/
+http://192.168.17.72:31400/
